@@ -1,0 +1,27 @@
+# AdventOfCode
+
+My advent of code 2021 solutions, as well as some boilerplate code and a little shell-like program with ***personality*** for running solutions quickly.
+
+# Building
+
+## Prerequisites
+
+- 20 years full-stack web development experience
+- 30 years C#/.Net experience (40 years recommended)
+- 2 PhDs (at the very least)
+- A (somewhat) working computer (this one is more optional)
+- .NET 6
+- A Working Keyboard
+- At least five brain cells (seven recommended)
+- Visual Studio 2022
+- RTX 4090 Ti (minimum - might still have grahical issues)
+
+## instructions
+- Clone the repo
+- Open in VS 2022
+
+###### Good luck with this next step...
+
+- Click Start
+
+And boom! just like that you have my AOC solutions. Have fun, I guess.
