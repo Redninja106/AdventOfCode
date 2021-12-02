@@ -9,12 +9,12 @@ My advent of code 2021 solutions, as well as some boilerplate code and a little 
 - 20 years full-stack web development experience
 - 30 years C#/.Net experience (40 years recommended)
 - 2 PhDs (at the very least)
-- A (somewhat) working computer (this one is more optional)
+- A (somewhat) working computer
 - .NET 6
 - A Working Keyboard
-- At least five brain cells (seven recommended)
+- At least five brain cells (seven/eight recommended)
 - Visual Studio 2022
-- RTX 4090 Ti (minimum - might still have grahical issues)
+- RTX 4090 Ti (minimum - might still have framerate issues)
 
 ## instructions
 - Clone the repo
