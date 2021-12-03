@@ -122,7 +122,7 @@ internal class PuzzleRunner
             var input = Console.ReadLine();
             var args = input!.Split(' ');
             args[0] = args[0].ToLower().Trim();
-            if (int.TryParse(args[0], out day))
+            if (int.TryParse(args[0], out day) || (args[0] == "run" && int.TryParse(args[1], out day)))
             {
                 if (day > 0 && day <= 25)
                 {
