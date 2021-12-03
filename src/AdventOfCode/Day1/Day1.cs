@@ -10,7 +10,7 @@ internal class Day1 : IPuzzle
     public object? SolvePart1(string input)
     {
         // parse input into list of ints
-        var inputValues = input.Split(Environment.NewLine).Select(str => int.Parse(str)).ToList();
+        var inputValues = input.Split(Environment.NewLine).Select(str => int.Parse(str.Trim())).ToList();
 
         int totalIncreased = 0;
         for (int i = 1; i < inputValues.Count; i++)
