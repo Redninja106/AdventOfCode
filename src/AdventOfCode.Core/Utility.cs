@@ -32,14 +32,4 @@ public static class Utility
 
         return result;
     }
-
-    public static string Merge(this IEnumerable<string> strings)
-    {
-        return strings.Aggregate("", (a, s) => a += s);
-    }
-
-    public static string Merge(this IEnumerable<string> strings, string separator)
-    {
-        return strings.Aggregate("", (a, s) => a += s + separator)[..^separator.Length];
-    }
 }

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode;
 
-internal class PuzzleRunner
+public class PuzzleRunner
 {
-    readonly Dictionary<int, IPuzzle[]> puzzles = new();
+    readonly List<IPuzzle[]> puzzles = new List<IPuzzle[]>(); 
 
     public PuzzleRunner()
     {
@@ -52,53 +52,48 @@ internal class PuzzleRunner
 
         // get an instance of each puzzle class 1-25
         var asm = Assembly.GetExecutingAssembly();
-        for (int y = 2015; y <= 2021; y++)
+        for (int i = 1; i <= 25; i++)
         {
-            puzzles[y] = new IPuzzle[25];
+            var type = asm.GetType($"AdventOfCode.Day{i}.Day{i}", false, true);
 
-            for (int i = 1; i <= 25; i++)
+            if (type == null)
+                continue; // day is missing... 
+
+            var puzzle = Activator.CreateInstance(type);
+
+            if (puzzle == null)
+                continue; // couldn't create...
+            try
             {
-                var type = asm.GetType($"AdventOfCode.Year{y}.Day{i}.Day{i}", false, true);
+                GetPuzzle(i) = (IPuzzle)puzzle;
+            }
+            catch (InvalidCastException)
+            {
+                // uh oh! I didnt implement IPuzzle. That's fine.
+                var bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
 
-                if (type == null)
-                    continue; // day is missing... 
+                Func<string, string>? part1 = null, part2 = null;
 
-                var puzzle = Activator.CreateInstance(type);
-
-                if (puzzle == null)
-                    continue; // couldn't create...
-                try
+                var part1Info = type.GetMethod("SolvePart1", bindingFlags);
+                if (part1Info != null)
                 {
-                    GetPuzzle(y, i) = (IPuzzle)puzzle;
+                    part1 = CreateSolveDelegate(part1Info, puzzle);
                 }
-                catch (InvalidCastException)
+                else
                 {
-                    // uh oh! I didnt implement IPuzzle. That's fine.
-                    var bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
-
-                    Func<string, string>? part1 = null, part2 = null;
-
-                    var part1Info = type.GetMethod("SolvePart1", bindingFlags);
-                    if (part1Info != null)
-                    {
-                        part1 = CreateSolveDelegate(part1Info, puzzle);
-                    }
-                    else
-                    {
-                        // maybe theres a "Solve" method
-                        var solveInfo = type.GetMethod("Solve", bindingFlags);
-                        if (solveInfo != null)
-                            part1 = CreateSolveDelegate(solveInfo, puzzle);
-                    }
-
-                    var part2Info = type.GetMethod("SolvePart2", bindingFlags);
-                    if (part2Info != null)
-                    {
-                        part2 = CreateSolveDelegate(part2Info, puzzle);
-                    }
-
-                    GetPuzzle(y, i) = new PuzzleDelegateAdapter(part1, part2);
+                    // maybe theres a "Solve" method
+                    var solveInfo = type.GetMethod("Solve", bindingFlags);
+                    if (solveInfo != null)
+                        part1 = CreateSolveDelegate(solveInfo, puzzle);
                 }
+                
+                var part2Info = type.GetMethod("SolvePart2", bindingFlags);
+                if (part2Info != null)
+                {
+                    part2 = CreateSolveDelegate(part2Info, puzzle);
+                }
+
+                GetPuzzle(i) = new PuzzleDelegateAdapter(part1, part2);
             }
         }
     }
@@ -127,16 +122,12 @@ internal class PuzzleRunner
             var input = Console.ReadLine();
             var args = input!.Split(' ');
             args[0] = args[0].ToLower().Trim();
-            if (int.TryParse(args[0], out day))
+            if (int.TryParse(args[0], out day) || (args[0] == "run" && int.TryParse(args[1], out day)))
             {
                 if (day > 0 && day <= 25)
                 {
                     RunDay(day);
                 }
-            }
-            if (args[0] == "run" && int.TryParse(args[1], out int year) && int.TryParse(args[2], out day))
-            {
-                RunDay(day, year);
             }
             else if (args[0] == "exit")
             {
@@ -271,31 +262,20 @@ internal class PuzzleRunner
 
     public void RunAll()
     {
-        for (int y = 15; y <= 21; y++)
+        for (int i = 1; i <= 25; i++)
         {
-            for (int i = 1; i <= 25; i++)
-            {
-                RunDay(i, y);
-            }
+            RunDay(i);
         }
     }
 
-    private void RunDay(int day, int year = -1)
+    private void RunDay(int day)
     {
-        if (year == -1)
-            year = DateTime.Now.Year;
-
-        if (year < 100)
-        {
-            year += 2000;
-        }
-
-        var puzzle = GetPuzzle(year, day);
+        var puzzle = GetPuzzle(day);
 
         if (puzzle == null)
             return;
 
-        var input = LoadPuzzleInput(year, day);
+        var input = LoadPuzzleInput(day);
 
         var answer1 = puzzle.SolvePart1(input);
         var answer2 = puzzle.SolvePart2(input);
@@ -345,14 +325,14 @@ internal class PuzzleRunner
 
     private ref IPuzzle GetPuzzle(int year, int day)
     {
-        return ref puzzles[year][day - 1];
+        return ref puzzles[year - 15][day - 1];
     }
 
-    private string LoadPuzzleInput(int year, int day)
+    private string LoadPuzzleInput(int day)
     {
         try 
         {
-            return File.ReadAllText($"./Year{year}/Day{day}/input.txt");
+            return File.ReadAllText($"./Day{day}/input.txt");
         }
         catch
         {
@@ -413,5 +393,10 @@ internal class PuzzleRunner
                 throw;
             }
         }
+    }
+
+    public void RegisterYear(int v)
+    {
+        var assembly = Assembly.Load("AdventOfCode21");
     }
 }
