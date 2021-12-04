@@ -2,6 +2,14 @@
 
 My advent of code 2021 solutions, as well as some boilerplate code and a little shell-like program with ***personality*** for running solutions quickly.
 
+# Features
+
+- A (not) Sentient Help Program
+- Primitive (Prehistoric) Shell Application for running any implemented puzzle.
+- Automatically detects classes that implement the `IPuzzle` interface and uses them
+- Automagically copies the answer to the puzzles to the clipboard.
+- Command to open any puzzle or just the main page on [Advent of Code's](https://adventofcode.com) website.
+
 # Building
 
 ## Prerequisites
