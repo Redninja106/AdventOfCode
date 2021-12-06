@@ -30,26 +30,15 @@ internal class Day10 : IPuzzle
         adapters.Sort();
         adapters.Insert(0, 0);
 
-        int Diff(int i)
+        int count = 0;
+        for (int i = 1; i < adapters.Count-1; i++)
         {
-            return adapters[i + 1] - adapters[i];
-        }
-
-
-        int pairCount = 0, diff = 0;
-        for (int i = 1; i < adapters.Count - 1; i++)
-        {
-            if (Diff(i - 1) == 1 && Diff(i) == 1 && diff < 3)
+            if (adapters[i+1] - adapters[i - 1] <= 3)
             {
-                pairCount++;
-                diff++;
-            }
-            else if (Diff(i - 1) == 3 || Diff(i) == 3)
-            {
-                diff = 0;
+                count++;
             }
         }
         
-        return 1 << pairCount;
+        return count;
     }
 }
