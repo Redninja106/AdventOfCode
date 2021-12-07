@@ -42,4 +42,9 @@ public static class Utility
     {
         return strings.Aggregate("", (a, s) => a += s + separator)[..^separator.Length];
     }
+
+    public static string[] SplitSafe(this string s, string separator)
+    {
+        return s.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    }
 }
